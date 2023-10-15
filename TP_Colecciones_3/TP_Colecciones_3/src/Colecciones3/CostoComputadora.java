@@ -67,7 +67,8 @@ public class CostoComputadora {
             System.out.print("Desea cotizar una nueva computadora:");
             salida = salidaSubmenu();
     
-        } while (!salida);   
+        } while (!salida);
+        System.out.println("Saliendo......");
     }
     
     public static String completarConEspacios(String cadena){
@@ -84,7 +85,7 @@ public class CostoComputadora {
         System.out.println("---------------- Computadora ----------------");
         System.out.println("Marca: " + nuevaPC.getMarca());
         System.out.println("Modelo: " + nuevaPC.getModelo());
-        System.out.println("Compónentes:");
+        System.out.println("Componentes:");
         System.out.println("-----------------------------------------------------------------------------------------");
         System.out.println(completarConEspacios("Componente")+ completarConEspacios("Marca") + completarConEspacios("Cantidad")+ completarConEspacios("Precio X Unidad") + "Subtotal" );
         System.out.println("-----------------------------------------------------------------------------------------");
