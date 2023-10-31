@@ -11,8 +11,13 @@ import java.util.Scanner;
  */
 public class Ejercicio {
     public static void main(String[] args) {
+        String[] dna = new String[6];
         System.out.println("Ingrese el array de strings:");
-    }
+        for (i = 0; i < 6; i++) {
+        
+        }
+}
+
     static boolean isMutant(String[] dna){
     return true;
     }
