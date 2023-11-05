@@ -41,12 +41,50 @@ public class Ejercicio {
                 }
             }
         }
-        for (String string : dna) {
-            System.out.println(string);
-        }
+        System.out.println("Se han encontrado mutantes: " + isMutant(dna));
     }
 
     static boolean isMutant(String[] dna){
-    return true;
+        int contadorSecuencias = 0; //si se encuentra una secuencia valida aumenta en 1
+        char[][] dna2D = new char[6][6];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 6; j++) {
+                dna2D[i][j] = dna[i].charAt(j);// se cargan los valores de la matriz unidimensional en una de char de 2 dimensiones
+            }
+        }
+        
+        System.out.println("La matriz de adn es:");
+        for (char[] cs : dna2D) {
+            for (char c : cs) {
+                System.out.print(c + "\t");
+            }
+            System.out.println("");   
+        }
+        
+        for (int i = 0; i < 6; i++) { // veo las cadenas horizontales
+            for (int j = 0; j <  3; j++) {
+                if (dna2D[i][j] == dna2D[i][j + 1] && dna2D[i][j] == dna2D[i][j + 2] && dna2D[i][j] == dna2D[i][j + 3]) {
+                    contadorSecuencias++;
+                }
+            }
+        }
+        
+        for (int i = 0; i < 3; i++) { // veo las cadenas verticales
+            for (int j = 0; j < 6; j++) {
+                if (dna2D[i][j] == dna2D[i + 1][j] && dna2D[i][j] == dna2D[i + 2][j] && dna2D[i][j] == dna2D[i + 3][j]) {
+                    contadorSecuencias++;
+                }
+            }
+        }
+        
+        for (int i = 0; i < 3; i++) { // veo las cadenas diagonales
+            for (int j = 0; j < 3; j++) {
+                if (dna2D[i][j] == dna2D[i + 1][j + 1] && dna2D[i][j] == dna2D[i + 2][j + 2] && dna2D[i][j] == dna2D[i + 3][j + 3]) {
+                    contadorSecuencias++;
+                }
+            }
+        }
+        
+        return contadorSecuencias >= 2;
     }   
 }
