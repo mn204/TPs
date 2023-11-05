@@ -30,7 +30,7 @@ public class Ejercicio {
                         }
                     }
                     if (letraValida == 6) { // al verificarse que son 6 letras validas se añade la base al array
-                        System.out.println("La base ingresada es valida, añadiendo a la fila.");
+                        System.out.println("La base ingresada es valida, añadiendo a la fila nro " + (i+1) + ".");
                         dna[i]= base;
                         break; // se rompe el ciclo while para pasar a la otra posicion del array
                     } else {
