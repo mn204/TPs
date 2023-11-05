@@ -11,7 +11,6 @@ import java.util.Scanner;
  */
 public class Ejercicio {
     public static void main(String[] args) {
-<<<<<<< HEAD
         Scanner sc = new Scanner(System.in);
         String[] dna = new String[6];
         System.out.println("Comienzo de programa mutantes....");
@@ -46,18 +45,8 @@ public class Ejercicio {
             System.out.println(string);
         }
     }
-=======
-        String[] dna = new String[6];
-        System.out.println("Ingrese el array de strings:");
-        for (i = 0; i < 6; i++) {
-        
-        }
-}
 
->>>>>>> f4dc27fb566a6e615d1c1638cba1698b4879eeda
     static boolean isMutant(String[] dna){
     return true;
-    }
-
-    
+    }   
 }
