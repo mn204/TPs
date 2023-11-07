@@ -78,8 +78,8 @@ public class CalculoBonoSueldo {
            System.out.println("Comenzando carga de haberes....");
            System.out.println("----------------------------------------------------------------------------------------");
            
+           double sumaHaberes = 0;//variable local del ciclo para llevar la suma por cada bono  
            while (true) {     // comienza el ciclo de carga de haberes.            
-               double sumaHaberes = 0; //variable local del ciclo para llevar la suma por cada bono  
                System.out.println("Ingrese los Haberes del Empleado");
                 System.out.println("Ingrese el código del ítem: (si desea salir ingrese el codigo '000')");
                 Integer codIngresado = sc.nextInt();
@@ -136,8 +136,9 @@ public class CalculoBonoSueldo {
            System.out.println("----------------------------------------------------------------------------------------");
            int contadorDeducciones = 0; // debido a que ya cargue los haberes en la lista no puedo utilizar isEmpty asique si se agrega una deduccion aumenta el contador 
            // se agrego afuera del ciclo para que no se reinicie siempre la variable
-           while (true) {     // comienza el ciclo de carga de deducciones. 
-                double sumaDeducciones = 0; //variable local del ciclo para llevar la suma por cada bono
+           double sumaDeducciones = 0; //variable local del ciclo para llevar la suma por cada bono
+           
+           while (true) {     // comienza el ciclo de carga de deducciones.    
                 System.out.println("Ingrese las deducciones del Empleado");
                 System.out.println("Ingrese el código del ítem: (si desea salir ingrese el codigo '000')");
                 Integer codIngresado = sc.nextInt();
@@ -146,7 +147,7 @@ public class CalculoBonoSueldo {
                     if (contadorDeducciones >= 1) {
                         System.out.println("Codigo de salida ingresado, saliendo de la carga de deducciones....");
                         System.out.println("----------------------------------------------------------------------------------------");
-                        bono.setSumaDeducciones(0);
+                        bono.setSumaDeducciones(sumaDeducciones);
                         break; // el unico break que sale de la carga de deducciones                         
 
                     } else{
@@ -223,12 +224,10 @@ public class CalculoBonoSueldo {
             System.out.println(completarConEspacios("Mes Liquidacion:") + completarConEspacios(String.valueOf(bono.getMesLiquidacion())) + completarConEspacios("Anio Liquidacion:") + completarConEspacios(String.valueOf(bono.getAnioLiquidacion())));
             System.out.println(completarConEspacios("Sueldo Basico:") + completarConEspacios(String.valueOf(persona.getSueldoBasico())) + completarConEspacios("Anio Ingreso:") + completarConEspacios(String.valueOf(persona.getAnioIngreso())));
             System.out.println(completarConEspacios("Codigo Item") + completarConEspacios("Denominacion") + completarConEspacios("Haberes") + completarConEspacios("Deducciones"));
-            System.out.println(completarConEspacios(" ") + completarConEspacios("Sueldo Basico") + completarConEspacios(String.valueOf(persona.getSueldoBasico())));
+            System.out.println(completarConEspacios(" ") + completarConEspacios("Sueldo Basico") + completarConEspacios(String.valueOf(persona.getSueldoBasico())));    
             System.out.println(completarConEspacios(" ") + completarConEspacios("Antiguedad") + completarConEspacios(String.valueOf(persona.getMontoAntiguedad())));
             
-        }
-        
-        
+        }  
     }
     
     public static String completarConEspacios(String cadena){
