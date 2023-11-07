@@ -18,9 +18,9 @@ public class CalculoBonoSueldo {
     static int anio = YearMonth.now().getYear(); //obtener anio actual
     public static void main(String[] args) {
         
-        String[][] haberes = {{"100","Presentismo", "9"} , {"101"," Titulo Profesional" , "9"} , {"102","Horas Extraordinarias", "M"} , {"103","Horas Nocturnas", "M"} , {"104"," Otros Haberes", "M"}};
+        String[][] haberes = {{"100","Presentismo", "9"} , {"101","Titulo Profesional" , "9"} , {"102","Horas Extraordinarias", "M"} , {"103","Horas Nocturnas", "M"} , {"104","Otros Haberes", "M"}};
         
-        String [][] deducciones = {{"200"," Obra Social", "3"} , {"201","Jubilacion", "11"} , {"202","Sindicato", "2"} , {"203"," Seguro", "1.5"} , {"204","Otros", "M"}};
+        String [][] deducciones = {{"200","Obra Social", "3"} , {"201","Jubilacion", "11"} , {"202","Sindicato", "2"} , {"203","Seguro", "1.5"} , {"204","Otros", "M"}};
         
         
         System.out.println("Comenzar carga de bono de Sueldo......");
@@ -67,12 +67,11 @@ public class CalculoBonoSueldo {
         boolean salidaBonos = false;
         
         do {      // se crea un nuevo bono de sueldo para el empleado
-           List<Integer> codigosIngresados = new ArrayList<Integer>(); // se mueve la lista de codigos al bucle ya que al intetar agregar un nuevo bono como esta lista estaba afuera nunca se reiniciaba y siempre estaba llena
+           List<Integer> codigosIngresados = new ArrayList<Integer>(); // se mueve la lista de codigos al bucle ya que al intentar agregar un nuevo bono como esta lista estaba afuera nunca se reiniciaba y siempre estaba llena
            BonoSueldo bono = new BonoSueldo();
            bono.setEmpleado(persona);
            bono.setMesLiquidacion(mesliq);
            bono.setAnioLiquidacion(anioliq);
-
            String [][] bonoCalculado = new String[10][4]; // se crea el array
            System.out.println("----------------------------------------------------------------------------------------");
            System.out.println("Comenzando carga de haberes....");
@@ -147,7 +146,7 @@ public class CalculoBonoSueldo {
                     if (contadorDeducciones >= 1) {
                         System.out.println("Codigo de salida ingresado, saliendo de la carga de deducciones....");
                         System.out.println("----------------------------------------------------------------------------------------");
-                        bono.setSumaDeducciones(sumaDeducciones);
+                        bono.setSumaDeducciones(sumaDeducciones);                   
                         break; // el unico break que sale de la carga de deducciones                         
 
                     } else{
@@ -196,7 +195,11 @@ public class CalculoBonoSueldo {
            //comienzo de todos los calculos del bono
            double neto = (persona.getSueldoBasico() + persona.getMontoAntiguedad() + bono.getSumaHaberes()) - bono.getSumaDeducciones();
            bono.setMontoLiquidacion(neto);
-           bono.setBonoCalculado(bonoCalculado);
+           reemplazarNullporEspacios(bonoCalculado); // se aplica la funcion ya que generaba error los valores null.
+           // en alguna otra revision se podria resolver esto primero recorriendo el array 
+           // luego generando nuevo array eliminando todas las filas vacias para que en la representacion grafica se vea mejor
+           
+           bono.setBonoCalculado(bonoCalculado); // se   
            persona.getBonos().add(bono);// se agrega el bono a la lista de bonos de sueldo del empleado
            
             do {
@@ -221,20 +224,48 @@ public class CalculoBonoSueldo {
             System.out.println("----------------------------------------------------------------------------------------");
             System.out.println("Nombre:" +"\t"+ persona.getNombreEmpleado());
             System.out.println("CUIL:" +"\t" + persona.getCuil());
-            System.out.println(completarConEspacios("Mes Liquidacion:") + completarConEspacios(String.valueOf(bono.getMesLiquidacion())) + completarConEspacios("Anio Liquidacion:") + completarConEspacios(String.valueOf(bono.getAnioLiquidacion())));
-            System.out.println(completarConEspacios("Sueldo Basico:") + completarConEspacios(String.valueOf(persona.getSueldoBasico())) + completarConEspacios("Anio Ingreso:") + completarConEspacios(String.valueOf(persona.getAnioIngreso())));
+            System.out.println(completarConEspacios("Mes Liquidacion:",20) + completarConEspacios(String.valueOf(bono.getMesLiquidacion())) + completarConEspacios("Anio Liquidacion:") + completarConEspacios(String.valueOf(bono.getAnioLiquidacion())));
+            System.out.println(completarConEspacios("Sueldo Basico:",20) + completarConEspacios(String.valueOf(persona.getSueldoBasico())) + completarConEspacios("Anio Ingreso:") + completarConEspacios(String.valueOf(persona.getAnioIngreso())));
+            System.out.println("----------------------------------------------------------------------------------------");                                    
             System.out.println(completarConEspacios("Codigo Item") + completarConEspacios("Denominacion") + completarConEspacios("Haberes") + completarConEspacios("Deducciones"));
-            System.out.println(completarConEspacios(" ") + completarConEspacios("Sueldo Basico") + completarConEspacios(String.valueOf(persona.getSueldoBasico())));    
-            System.out.println(completarConEspacios(" ") + completarConEspacios("Antiguedad") + completarConEspacios(String.valueOf(persona.getMontoAntiguedad())));
-            
+            System.out.println("----------------------------------------------------------------------------------------");                        
+            System.out.println(completarConEspacios("") + completarConEspacios("Sueldo Basico") + completarConEspacios(String.valueOf(persona.getSueldoBasico())));    
+            System.out.println(completarConEspacios("") + completarConEspacios("Antiguedad") + completarConEspacios(String.valueOf(persona.getMontoAntiguedad())));
+            System.out.println("----------------------------------------------------------------------------------------");            
+            for (String[] strings : bono.getBonoCalculado()) {
+                for (String string : strings) {
+                    System.out.print(completarConEspacios(string));
+                }
+                System.out.println("");                    
+            }
+            System.out.println(completarConEspacios("") + completarConEspacios("SUBTOTAL") +completarConEspacios(String.valueOf((persona.getSueldoBasico() + persona.getMontoAntiguedad() + bono.getSumaHaberes())))+ completarConEspacios(String.valueOf(bono.getSumaDeducciones())));
+            System.out.println(completarConEspacios("") + completarConEspacios("") + completarConEspacios("NETO") + completarConEspacios(String.valueOf(bono.getMontoLiquidacion())));
+            System.out.println("----------------------------------------------------------------------------------------");            
         }  
     }
     
     public static String completarConEspacios(String cadena){
-    int cantidadEspacios = 25-cadena.length();
-    for (int i = 0; i < cantidadEspacios; i++) {
-        cadena+= " ";
+        int cantidadEspacios = 25-cadena.length();
+        for (int i = 0; i < cantidadEspacios; i++) {
+            cadena+= " ";
+            }
+        return cadena;
+    }
+    
+    public static String completarConEspacios(String cadena, int menorValor){ // se aplica sobrecarga de constructores para el caso de que queramos usar un valor menor al predeterminado de 25
+        int cantidadEspacios = menorValor-cadena.length(); // se realiza esto ya que en la primera columna con el valor de 25 era mucho para valores pequeños por lo que quedaban mas separados
+        for (int i = 0; i < cantidadEspacios; i++) {
+            cadena+= " ";
+            }
+        return cadena;
+    }
+    public static void reemplazarNullporEspacios(String[][] array) { // funcion que en los valores null los reemplaza por espacios para poder uttilizar la funcion completar conEspacios
+        for (int i = 0; i < array.length; i++) { // se utilizo chatgpt para crear esta funcion
+            for (int j = 0; j < array[i].length; j++) {
+                if (array[i][j] == null) {
+                    array[i][j] = "";
+                }
+            }
         }
-    return cadena;
     }
 }
