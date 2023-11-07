@@ -13,6 +13,33 @@ public class BonoSueldo {
     private int mesLiquidacion;
     private int anioLiquidacion;
     private double montoLiquidacion;
+    private String[][] bonoCalculado; // se agrega este array para guardar la informacion y que no se pierda en bucle
+    private  double sumaHaberes; // se pasan estas variables aca para que se relacionen con cada bono de sueldo especifico
+
+    public double getSumaHaberes() {
+        return sumaHaberes;
+    }
+
+    public void setSumaHaberes(double sumaHaberes) {
+        this.sumaHaberes = sumaHaberes;
+    }
+
+    public double getSumaDeducciones() {
+        return sumaDeducciones;
+    }
+
+    public void setSumaDeducciones(double sumaDeducciones) {
+        this.sumaDeducciones = sumaDeducciones;
+    }
+    private  double sumaDeducciones;
+
+    public String[][] getBonoCalculado() {
+        return bonoCalculado;
+    }
+
+    public void setBonoCalculado(String[][] bonoCalculado) {
+        this.bonoCalculado = bonoCalculado;
+    }
 
     public Empleado getEmpleado() {
         return empleado;

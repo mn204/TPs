@@ -22,9 +22,6 @@ public class CalculoBonoSueldo {
         
         String [][] deducciones = {{"200"," Obra Social", "3"} , {"201","Jubilacion", "11"} , {"202","Sindicato", "2"} , {"203"," Seguro", "1.5"} , {"204","Otros", "M"}};
         
-        List<Integer> codigosIngresados = new ArrayList<Integer>();
-        
-        double sumaHaberes = 0, sumaDeducciones = 0; //variables para llevar la suma
         
         System.out.println("Comenzar carga de bono de Sueldo......");
         System.out.println("---------------------------------------");
@@ -57,9 +54,10 @@ public class CalculoBonoSueldo {
                 System.out.println("Ingrese el sueldo basico");
                 double sueldobasico = sc.nextDouble();
                 sc.nextLine();
-                double montoAntiguedad = (anio - anioingreso) * 0.02;
+                double montoAntiguedad = ((anio - anioingreso) * 0.02) * sueldobasico;
                 persona.setSueldoBasico(sueldobasico);
                 persona.setMontoAntiguedad(montoAntiguedad);
+                persona.setAnioIngreso(anioingreso);
                 List<BonoSueldo> bonos= new ArrayList<>();
                 persona.setBonos(bonos);
                 break;
@@ -68,29 +66,32 @@ public class CalculoBonoSueldo {
         
         boolean salidaBonos = false;
         
-        do {      // se crea un nuevo bono de sueldo para el empleado      
+        do {      // se crea un nuevo bono de sueldo para el empleado
+           List<Integer> codigosIngresados = new ArrayList<Integer>(); // se mueve la lista de codigos al bucle ya que al intetar agregar un nuevo bono como esta lista estaba afuera nunca se reiniciaba y siempre estaba llena
            BonoSueldo bono = new BonoSueldo();
            bono.setEmpleado(persona);
            bono.setMesLiquidacion(mesliq);
            bono.setAnioLiquidacion(anioliq);
 
            String [][] bonoCalculado = new String[10][4]; // se crea el array
-           System.out.println("-------------------------------------------------------------");
+           System.out.println("----------------------------------------------------------------------------------------");
            System.out.println("Comenzando carga de haberes....");
-           System.out.println("-------------------------------------------------------------");
+           System.out.println("----------------------------------------------------------------------------------------");
            
            while (true) {     // comienza el ciclo de carga de haberes.            
-                System.out.println("Ingrese los Haberes del Empleado");
+               double sumaHaberes = 0; //variable local del ciclo para llevar la suma por cada bono  
+               System.out.println("Ingrese los Haberes del Empleado");
                 System.out.println("Ingrese el código del ítem: (si desea salir ingrese el codigo '000')");
                 Integer codIngresado = sc.nextInt();
                 sc.nextLine();
                 if (codIngresado == 000){ //verifico codigo de salida y que haya al menos 1 haber cargado
                     if (codigosIngresados.isEmpty()) {
                         System.out.println("Debe ingresar al menos 1 haber, Reiniciando.....");
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("----------------------------------------------------------------------------------------");
                         continue;
                     } else{
                         System.out.println("Codigo de salida ingresado, saliendo de la carga de haberes");
+                        bono.setSumaHaberes(sumaHaberes); // se guarda la suma antes de salir
                         break; // el unico break que sale de la carga de haberes
                     }
                 }
@@ -98,7 +99,7 @@ public class CalculoBonoSueldo {
                 if (codigosIngresados.contains(codIngresado)){ //verifico que no haya el codigo en la lista
                     System.out.println("El código ya ha sido cargado, ingrese otro codigo");
                     System.out.println("Comenzando nuevamente....");
-                    System.out.println("-------------------------------------------------------------");
+                    System.out.println("----------------------------------------------------------------------------------------");
                     continue;
                 }
                 boolean codEncontrado = false; // booleano en caso de que el codigo sea incorrecto
@@ -112,12 +113,12 @@ public class CalculoBonoSueldo {
                            double porcentaje = sc.nextDouble();
                            sc.nextLine();
                            bonoCalculado[i][2]= String.valueOf(porcentaje * 0.01 * persona.getSueldoBasico());                            
-                           System.out.println("Haber agregado al calculo.... Comenzando nuevamente");
-                           System.out.println("-------------------------------------------------------------");
+                           System.out.println("Haberes agregado al calculo.... Comenzando nuevamente");
+                           System.out.println("----------------------------------------------------------------------------------------");
                        } else {
                            bonoCalculado[i][2] = String.valueOf(Double.parseDouble(haberes[i][2])* 0.01 * persona.getSueldoBasico());
-                           System.out.println("Haber agregado al calculo.... Comenzando nuevamente");
-                           System.out.println("-------------------------------------------------------------");
+                           System.out.println("Haberes agregado al calculo.... Comenzando nuevamente");
+                           System.out.println("----------------------------------------------------------------------------------------");
                        }
                        codigosIngresados.add(codIngresado);
                        sumaHaberes += Double.parseDouble(bonoCalculado[i][2]); // se agrega el haber a la suma
@@ -125,17 +126,18 @@ public class CalculoBonoSueldo {
                }
                if (!codEncontrado) {
                    System.out.println("El codigo ingresado es incorrecto. Comenzando nuevamente....");
-                   System.out.println("-------------------------------------------------------------");
+                   System.out.println("----------------------------------------------------------------------------------------");
                    continue;
                }    
            }
            
-           System.out.println("-------------------------------------------------------------");
+           System.out.println("----------------------------------------------------------------------------------------");
            System.out.println("Comenzando carga de Deducciones....");
-           System.out.println("-------------------------------------------------------------");
+           System.out.println("----------------------------------------------------------------------------------------");
            int contadorDeducciones = 0; // debido a que ya cargue los haberes en la lista no puedo utilizar isEmpty asique si se agrega una deduccion aumenta el contador 
            // se agrego afuera del ciclo para que no se reinicie siempre la variable
-           while (true) {     // comienza el ciclo de carga de deducciones.            
+           while (true) {     // comienza el ciclo de carga de deducciones. 
+                double sumaDeducciones = 0; //variable local del ciclo para llevar la suma por cada bono
                 System.out.println("Ingrese las deducciones del Empleado");
                 System.out.println("Ingrese el código del ítem: (si desea salir ingrese el codigo '000')");
                 Integer codIngresado = sc.nextInt();
@@ -143,12 +145,13 @@ public class CalculoBonoSueldo {
                 if (codIngresado == 000){ //verifico codigo de salida y que haya al menos 1 haber cargado en este caso utilizando un contador
                     if (contadorDeducciones >= 1) {
                         System.out.println("Codigo de salida ingresado, saliendo de la carga de deducciones....");
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("----------------------------------------------------------------------------------------");
+                        bono.setSumaDeducciones(0);
                         break; // el unico break que sale de la carga de deducciones                         
 
                     } else{
                         System.out.println("Debe ingresar al menos 1 deducción, Reiniciando.....");
-                        System.out.println("-------------------------------------------------------------");
+                        System.out.println("----------------------------------------------------------------------------------------");
                         continue;
                     }
                 }
@@ -156,7 +159,7 @@ public class CalculoBonoSueldo {
                 if (codigosIngresados.contains(codIngresado)){ //verifico que no haya el codigo en la lista
                     System.out.println("El código ya ha sido cargado, ingrese otro codigo");
                     System.out.println("Comenzando nuevamente....");
-                    System.out.println("-------------------------------------------------------------");
+                    System.out.println("----------------------------------------------------------------------------------------");
                     continue;
                 }
                 boolean codEncontrado = false; // booleano en caso de que el codigo sea incorrecto
@@ -170,12 +173,12 @@ public class CalculoBonoSueldo {
                            double porcentaje = sc.nextDouble();
                            sc.nextLine();
                            bonoCalculado[i+5][3]= String.valueOf(porcentaje * 0.01 * persona.getSueldoBasico());                            
-                           System.out.println("Deduccion agregado al calculo.... Comenzando nuevamente");
-                           System.out.println("-------------------------------------------------------------");
+                           System.out.println("Deduccion agregada al calculo.... Comenzando nuevamente");
+                           System.out.println("----------------------------------------------------------------------------------------");
                        } else {
                            bonoCalculado[i+5][3] = String.valueOf(Double.parseDouble(deducciones[i][2])* 0.01 * persona.getSueldoBasico());
-                           System.out.println("Deduccion agregado al calculo.... Comenzando nuevamente");
-                           System.out.println("-------------------------------------------------------------");
+                           System.out.println("Deduccion agregada al calculo.... Comenzando nuevamente");
+                           System.out.println("----------------------------------------------------------------------------------------");
                        }
                        codigosIngresados.add(codIngresado);
                        sumaDeducciones += Double.parseDouble(bonoCalculado[i+5][3]); //se agrega la deduccion a la suma
@@ -184,14 +187,15 @@ public class CalculoBonoSueldo {
                }
                if (!codEncontrado) {
                    System.out.println("El codigo ingresado es incorrecto. Comenzando nuevamente....");
-                   System.out.println("-------------------------------------------------------------");
+                   System.out.println("----------------------------------------------------------------------------------------");
                    continue;
                }    
            }            
 
            //comienzo de todos los calculos del bono
-           double neto = (persona.getSueldoBasico() + persona.getMontoAntiguedad() + sumaHaberes) - sumaDeducciones;
+           double neto = (persona.getSueldoBasico() + persona.getMontoAntiguedad() + bono.getSumaHaberes()) - bono.getSumaDeducciones();
            bono.setMontoLiquidacion(neto);
+           bono.setBonoCalculado(bonoCalculado);
            persona.getBonos().add(bono);// se agrega el bono a la lista de bonos de sueldo del empleado
            
             do {
@@ -212,12 +216,16 @@ public class CalculoBonoSueldo {
         
        //comienzo de mostrar la informacion por pantalla
         for (BonoSueldo bono : persona.getBonos()) {
-            System.out.println("--------------------------------------------------------------------------------");
-            System.out.println(completarConEspacios("Nombre:") + persona.getNombreEmpleado());
-            System.out.println("--------------------------------------------------------------------------------");
-            System.out.println("CUIL:" + persona.getCuil());
-            System.out.println("--------------------------------------------------------------------------------");
-            System.out.println("Mes:" +"\t" + persona.getCuil());
+            System.out.println("El bono de sueldo a Liquidar es:");
+            System.out.println("----------------------------------------------------------------------------------------");
+            System.out.println("Nombre:" +"\t"+ persona.getNombreEmpleado());
+            System.out.println("CUIL:" +"\t" + persona.getCuil());
+            System.out.println(completarConEspacios("Mes Liquidacion:") + completarConEspacios(String.valueOf(bono.getMesLiquidacion())) + completarConEspacios("Anio Liquidacion:") + completarConEspacios(String.valueOf(bono.getAnioLiquidacion())));
+            System.out.println(completarConEspacios("Sueldo Basico:") + completarConEspacios(String.valueOf(persona.getSueldoBasico())) + completarConEspacios("Anio Ingreso:") + completarConEspacios(String.valueOf(persona.getAnioIngreso())));
+            System.out.println(completarConEspacios("Codigo Item") + completarConEspacios("Denominacion") + completarConEspacios("Haberes") + completarConEspacios("Deducciones"));
+            System.out.println(completarConEspacios(" ") + completarConEspacios("Sueldo Basico") + completarConEspacios(String.valueOf(persona.getSueldoBasico())));
+            System.out.println(completarConEspacios(" ") + completarConEspacios("Antiguedad") + completarConEspacios(String.valueOf(persona.getMontoAntiguedad())));
+            
         }
         
         
